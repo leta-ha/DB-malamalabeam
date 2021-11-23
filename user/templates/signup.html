@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+    @font-face {
+                    font-family: 'GmarketSansBold';
+                    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+    </style>
+
+<h1 style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 30pt;">회원가입 페이지</h1>
+<form action="{% url 'user:signup' %}" method="POST" style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
+  {% csrf_token %}
+  {{form.as_p}}
+  <input type="submit" class="btn btn-primary" value="sign up"></input>
+</form>
+{% endblock %}

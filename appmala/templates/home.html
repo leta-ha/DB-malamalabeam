@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <head>
+            <style>
+                .horizon {
+                    display: flex;
+                    flex-direction: row;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    width: 100%;
+                    align-items: center;
+                    font-family: 'GmarketSansBold';
+                }
+                .rank {
+                    width: 120px;
+                }
+                .cover {
+                    margin-right: 20px;
+                }
+                .title {
+                    margin-right: 50px;
+                    text-decoration: none;
+                    color: black;
+                    font-size: 18pt;
+                }
+                .singer {
+                    text-decoration: none;
+                    color: black;
+                    font-size: 10pt;
+                }
+                .right{ text-align: right;
+                    flex: auto;
+                }
+                .date {font-size: 9pt;}
+                @font-face {
+                    font-family: 'GmarketSansBold';
+                    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+            </style>
+        </head>
+    <h3 style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 30pt;">🔥마라위키🔥</h3>
+    <h4><a href="{% url 'appmala:newstore' %}">New Store</a></h4>
+     {% comment %} <form action="{% url 'home' %}">
+      <p>제목으로 게시글 검색</p>
+      <input type="text" name="query">
+    </form> {% endcomment %}
+    <div class="container">
+      {% for store in stores %}
+      <div>
+        {{store.image}}
+        <h3>{{ store.store_name }}</h3>
+        <p>{{ store.address}}</p>
+		    {{ store.rating }}
+        {{ store.phone_num}}
+        <a href="{% url 'appmala:detail' store.id %}">...more</a>
+      </div>
+      {%endfor %}
+    </div>
+    <div class="paginator">
+      {% if stores.has_previous %}
+      <a href="?page=1">처음</a>
+      <a href="?page={{stores.previous_page_number}}">이전</a>
+      {% endif %}
+      <span>{{stores.number}}</span>
+      <span>of</span>
+      <span>{{stores.paginator.num_pages}}</span>
+      {% if stores.has_next %}
+      <a href="?page={{stores.next_page_number}}">다음</a>
+      <a href="?page={{stores.paginator.num_pages}}">마지막</a>
+      {% endif %}
+    </div>
+ {% endblock %}

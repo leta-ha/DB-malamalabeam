@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+    @font-face {
+                    font-family: 'GmarketSansBold';
+                    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+    </style>
+    <p style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
+    <h1>{{ store.store_name }}</h1>
+      <p>유저: {{appmala.user.username}}</p>
+      <p>{{ store.address }}</p>
+      <p>{{ store.rating }}</p>
+      <p>{{ store.phone_num }}</p>
+        {% if store.image %}
+        <img src="{{store.image.url}}" alt="" />
+        {% endif %}
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'appmala:delete' store.id%}">Delete</a>
+    </p>
+ {% endblock %}
