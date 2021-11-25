@@ -20,8 +20,8 @@ def home(request):
 
 def detail(request, id):
     store = get_object_or_404(Store, pk = id)
-    reviews = Review.objects.filter(number=id)
-    comments = Comment.objects.filter(number=id)
+    reviews = Review.objects.filter(review_id=id)
+    comments = Comment.objects.filter(comment_id=id)
     return render(request, 'detail.html', {'store': store, 'reviews': reviews, 'comments': comments})
 
 def newstore(request):

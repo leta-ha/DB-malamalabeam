@@ -63,7 +63,7 @@
   <body>
     <nav class="navbar">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}" style="color:white; font-size:40px; margin-left: 10px;"><b>😈마라마라빔!!!</b></a>
+        <a class="navbar-brand"  href="{% url 'home' %}" style="color:white; font-size:40px; margin-left: 10px; "><b>😈마라마라빔!!!</b></a>
         {% if user.is_authenticated %}
         <li class="nav-item" style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">{{request.user}}님 안녕하세요!</a>

@@ -4,4 +4,4 @@ from .models import Store
 class AppmalaForm(forms.ModelForm):
     class Meta:
         model = Store
-        fields = ['store_id','store_name','address', 'rating','image', 'phone_num']
+        fields = ['store_name','address', 'rating','image', 'phone_num']
