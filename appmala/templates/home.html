@@ -38,11 +38,41 @@
                     font-weight: normal;
                     font-style: normal;
                 }
+                button{
+                    border:1px solid silver;
+                    border-radius: 5px;
+                }
+                #contentContainer{
+                    padding: 50px;
+                    justify-content:center;
+                    display: grid;
+                    grid-template-rows:400px 400px;
+                    grid-template-columns: 300px 300px 300px;
+                }
+                .content{
+                    color: black;
+                    text-decoration: none;
+                    border: 1px solid silver;
+                    margin: 10px;
+                    border-radius: 10px;
+                }
+                .content > div{
+                    margin:5px auto;
+                    height: 60%;
+                    width: 80%;
+                }
+                .pagenator{
+                    padding: 30px;
+                    border-top: 1px solid black;
+                }
+                .pageLink{
+                    text-decoration: none;
+                }
             </style>
         </head>
-    <div style="display:flex; padding:20px;  flex-flow: row; align-content:center;">
+    <div style="text-align: left; display:flex; padding:20px;  flex-flow: row; align-content:center; border-bottom:1px solid black; ">
         <h3 style="flex:3; font-family: 'GmarketSansBold'; font-size: 30pt;">🔥마라위키🔥</h3>
-        <a href="{% url 'appmala:newstore' %}" style=" flex:1; height: 50%; margin:auto;"><button>New Store</button></a>
+        <a href="{% url 'appmala:newstore' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>New Store</button></a>
     </div>
     
      {% comment %} <form action="{% url 'home' %}">
@@ -50,28 +80,31 @@
       <input type="text" name="query">
     </form> {% endcomment %}
     <div class="container">
-      {% for store in stores %}
-      <div>
-        {{store.image}}
-        <h3>{{ store.store_name }}</h3>
-        <p>{{ store.address}}</p>
-		    {{ store.rating }}
-        {{ store.phone_num}}
-        <a href="{% url 'appmala:detail' store.id %}">...more</a>
-      </div>
-      {%endfor %}
-      <div class="paginator">
+        <div id="contentContainer">
+        {% for store in stores %}
+            <a class="content" href="{% url 'appmala:detail' store.id %}">
+                <div id="image"><img src="{{store.image}}" alt="none image"></div>
+                <h3>{{ store.store_name }}</h3>
+                <p>{{ store.address}}</p>
+                <p>{{ store.phone_num}}</p>
+                <span style="float:right; padding-right:20px">평점 {{ store.rating }}</span>
+            </a>
+        {%endfor %}
+        </div>
+      <div class="pagenator">
         {% if stores.has_previous %}
-        <a href="?page=1">처음</a>
-        <a href="?page={{stores.previous_page_number}}">이전</a>
+        <a class="pageLink" href="?page=1"><button>처음</button></a>
+        <a class="pageLink" href="?page={{stores.previous_page_number}}"><button>이전</button></a>
         {% endif %}
         <span>{{stores.number}}</span>
         <span>of</span>
         <span>{{stores.paginator.num_pages}}</span>
         {% if stores.has_next %}
-        <a href="?page={{stores.next_page_number}}">다음</a>
-        <a href="?page={{stores.paginator.num_pages}}">마지막</a>
+        <a class="pageLink" href="?page={{stores.next_page_number}}"><button>다음</button></a>
+        <a class="pageLink" href="?page={{stores.paginator.num_pages}}"><button>마지막</button></a>
         {% endif %}
+        </div>
       </div>
     </div>
- {% endblock %}
+    {% endblock %}
+    
