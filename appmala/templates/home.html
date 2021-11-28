@@ -40,8 +40,11 @@
                 }
             </style>
         </head>
-    <h3 style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 30pt;">🔥마라위키🔥</h3>
-    <h4><a href="{% url 'appmala:newstore' %}">New Store</a></h4>
+    <div style="display:flex; padding:20px;  flex-flow: row; align-content:center;">
+        <h3 style="flex:3; font-family: 'GmarketSansBold'; font-size: 30pt;">🔥마라위키🔥</h3>
+        <a href="{% url 'appmala:newstore' %}" style=" flex:1; height: 50%; margin:auto;"><button>New Store</button></a>
+    </div>
+    
      {% comment %} <form action="{% url 'home' %}">
       <p>제목으로 게시글 검색</p>
       <input type="text" name="query">
@@ -57,18 +60,18 @@
         <a href="{% url 'appmala:detail' store.id %}">...more</a>
       </div>
       {%endfor %}
-    </div>
-    <div class="paginator">
-      {% if stores.has_previous %}
-      <a href="?page=1">처음</a>
-      <a href="?page={{stores.previous_page_number}}">이전</a>
-      {% endif %}
-      <span>{{stores.number}}</span>
-      <span>of</span>
-      <span>{{stores.paginator.num_pages}}</span>
-      {% if stores.has_next %}
-      <a href="?page={{stores.next_page_number}}">다음</a>
-      <a href="?page={{stores.paginator.num_pages}}">마지막</a>
-      {% endif %}
+      <div class="paginator">
+        {% if stores.has_previous %}
+        <a href="?page=1">처음</a>
+        <a href="?page={{stores.previous_page_number}}">이전</a>
+        {% endif %}
+        <span>{{stores.number}}</span>
+        <span>of</span>
+        <span>{{stores.paginator.num_pages}}</span>
+        {% if stores.has_next %}
+        <a href="?page={{stores.next_page_number}}">다음</a>
+        <a href="?page={{stores.paginator.num_pages}}">마지막</a>
+        {% endif %}
+      </div>
     </div>
  {% endblock %}
