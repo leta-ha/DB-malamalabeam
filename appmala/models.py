@@ -16,7 +16,7 @@ from user.models import CustomUser
 
 class Store(models.Model): 
     #store_id = models.CharField(max_length=20)
-    user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
+    #user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
     store_name = models.CharField(max_length=20, null=False)
     address = models.CharField(max_length=20)
     rating = models.FloatField(max_length=20)
