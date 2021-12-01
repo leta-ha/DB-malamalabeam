@@ -11,7 +11,7 @@
     </style>
 
 <h1 style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 30pt;">회원가입 페이지</h1>
-<form action="{% url 'user:signup' %}" method="POST" style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
+<form "action="{% url 'user:signup' %}" method="POST" style="text-align:left; font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
   {% csrf_token %}
   {{form.as_p}}
   <input type="submit" class="btn btn-primary" value="sign up"></input>

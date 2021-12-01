@@ -13,7 +13,7 @@ def home(request):
     if query:
         stores = Store.objects.filter(title__icontains=query)
 
-    paginator = Paginator(stores, 5) # stores를 5개씩 쪼갠다
+    paginator = Paginator(stores, 6) # stores를 5개씩 쪼갠다
     page = request.GET.get('page') # 해당 정보가 오지 않아도 넘어간다
     paginated_stores = paginator.get_page(page)
     return render(request, 'home.html', {'stores': paginated_stores})
