@@ -14,7 +14,7 @@ def home(request):
     else:
         stores= Store.objects.all()
 
-    paginator= Paginator(stores, 8)
+    paginator= Paginator(stores, 6)
     page= request.GET.get('page')
     query = request.GET.get('query')
     paginated_stores= paginator.get_page(page)
