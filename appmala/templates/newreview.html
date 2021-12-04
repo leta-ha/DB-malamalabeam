@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+    {% block content %}
+    <style>
+    @font-face {
+                    font-family: 'GmarketSansBold';
+                    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+    </style>
+    <h1 style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 30pt;">리뷰 등록</h1>
+    <form style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;"
+      action="{%url 'appmala:createReview' store.id %}"
+      method="post"
+      enctype="multipart/form-data"
+    >
+    {%csrf_token%} 
+
+    {{form.as_p}}
+    <button type='submit'>작성하기</button>
+    </form>
+ {% endblock %}
