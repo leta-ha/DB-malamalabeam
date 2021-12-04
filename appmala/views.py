@@ -8,15 +8,20 @@ from django.core.paginator import Paginator
 
 # Create your views here.
 def home(request):
-    stores = Store.objects.all()
-    query = request.GET.get('query')
+    query= request.GET.get('query')
     if query:
-        stores = Store.objects.filter(title__icontains=query)
+        stores= Store.objects.filter(store_name__icontains=query)
+    else:
+        stores= Store.objects.all()
 
-    paginator = Paginator(stores, 5) # stores를 5개씩 쪼갠다
-    page = request.GET.get('page') # 해당 정보가 오지 않아도 넘어간다
-    paginated_stores = paginator.get_page(page)
-    return render(request, 'home.html', {'stores': paginated_stores})
+    paginator= Paginator(stores, 6)
+    page= request.GET.get('page')
+    query = request.GET.get('query')
+    paginated_stores= paginator.get_page(page)
+    if query:
+        return render(request, 'home.html', {'stores': paginated_stores, 'query': query})
+    else:
+        return render(request, 'home.html', {'stores': paginated_stores})
 
 # def detail(request):
 #     reviews = Review.objects.all()
@@ -54,8 +59,8 @@ def create(request):
     if form.is_valid(): # 유효성 검사 
         new_store = form.save(commit=False) # 임시 저장 나머지 필드(칼럼)를 채우기 위함
         new_store.pub_date = timezone.now()
-        if request.user.is_authenticated:
-            new_store.user = request.user
+        # if request.user.is_authenticated:
+        #     new_store.user = request.user
         new_store.save()
         return redirect('appmala:detail', new_store.id)
     return redirect('home')
