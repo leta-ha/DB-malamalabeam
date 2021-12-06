@@ -47,9 +47,9 @@ class Review(models.Model):
 	    return self.title
         
 class Comment(models.Model): 
-    comment_id = models.CharField(max_length=20)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    review_id = models.ForeignKey(Review, on_delete=models.CASCADE)
+    comment_id = models.CharField(max_length=20, null=True)
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
+    review_id = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, related_name="comments")
     comment_content = models.CharField(max_length=500, null=False)
     comment_date = models.DateTimeField()
     class Meta:

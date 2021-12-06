@@ -5,6 +5,7 @@ from django.utils import timezone
 from .models import Store, Bookmark, Review, Comment
 from .forms import AppmalaForm
 from django.core.paginator import Paginator
+from user.models import CustomUser
 
 # Create your views here.
 def home(request):
@@ -48,3 +49,20 @@ def delete(request, id):
 	store = Store.objects.get(id=id)
 	store.delete()
 	return redirect("home")
+
+def create_comment(request):
+    if request.method == "POST":
+        comment = Comment()
+        comment.comment_content = request.POST.get('comment_content', '')
+        comment.review_id = Review.objects.get(pk=request.POST.get('review_id'))
+        writer = request.user
+        print(writer)
+        if writer:
+            comment.user = CustomUser.objects.get(username=writer)
+        else:
+            return redirect('appmala:detail', comment.review_id.id)
+        comment.comment_date = timezone.now()
+        comment.save()
+        return redirect('appmala:detail', comment.review_id.id)
+    else:
+        return redirect('home')
