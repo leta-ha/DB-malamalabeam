@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 #from .models import Appmala
 from .models import Store, Bookmark, Review, Comment
-from .forms import AppmalaForm
+from .forms import AppmalaForm, ReviewForm
 from django.core.paginator import Paginator
 from user.models import CustomUser
 
@@ -24,15 +24,36 @@ def home(request):
     else:
         return render(request, 'home.html', {'stores': paginated_stores})
 
+# def detail(request):
+#     reviews = Review.objects.all()
+#     query = request.GET.get('query')
+#     if query:
+#         reviews = Review.objects.filter(title__icontains=query)
+
+#     paginator = Paginator(reviews, 5) # stores를 5개씩 쪼갠다
+#     page = request.GET.get('page') # 해당 정보가 오지 않아도 넘어간다
+#     paginated_reviews = paginator.get_page(page)
+#     return render(request, 'review.html', {'reviews': paginated_reviews})
+
 def detail(request, id):
     store = get_object_or_404(Store, pk = id)
-    reviews = Review.objects.filter(review_id=id)
+    reviews = Review.objects.filter(store=id)
     comments = Comment.objects.filter(comment_id=id)
     return render(request, 'detail.html', {'store': store, 'reviews': reviews, 'comments': comments})
+
+def review(request, id):
+    review = get_object_or_404(Review, pk = id)
+    comments = Comment.objects.filter(comment_id=id)
+    return render(request, 'review.html', {'review': review, 'comments': comments})
 
 def newstore(request):
     form = AppmalaForm()
     return render(request, 'newstore.html', {'form':form})
+
+def newreview(request, id):
+    form = ReviewForm()
+    store = get_object_or_404(Store, pk=id)
+    return render(request, 'newreview.html', {'form':form, 'store': store})
 
 def create(request):
     form = AppmalaForm(request.POST, request.FILES) # form 데이터를 처리하기 위해서 request.POST와 request.FILES가 필요함을 의미합니다.
@@ -43,6 +64,20 @@ def create(request):
         #     new_store.user = request.user
         new_store.save()
         return redirect('appmala:detail', new_store.id)
+    return redirect('home')
+
+def createReview(request, store_id):
+    form = ReviewForm(request.POST, request.FILES)
+    item =  get_object_or_404(Store, pk = store_id)
+
+    if form.is_valid():  
+        new_review = form.save(commit=False) 
+        new_review.pub_date = timezone.now()
+        if request.user.is_authenticated:
+            new_review.user = request.user
+            new_review.store = item
+        new_review.save()
+        return redirect('appmala:review', new_review.id)
     return redirect('home')
 
 def delete(request, id):
@@ -66,3 +101,7 @@ def create_comment(request):
         return redirect('appmala:detail', comment.review_id.id)
     else:
         return redirect('home')
+def deleteReview(request, id):
+   review = Review.objects.get(id=id)
+   review.delete()
+   return redirect("appmala:detail", review.store_id)

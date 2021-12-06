@@ -18,6 +18,18 @@
         {% endif %}
     <a href="{% url 'home' %}">Home</a>
     <a href="{% url 'appmala:delete' store.id%}">Delete</a>
+    <a href="{% url 'appmala:newreview' store.id%}">New Review</a>
+    <div class="container">
+      {% for review in reviews %}
+      <div>
+        {{ review.image }}
+        <h3>{{ review.title }}</h3>
+		    <p>{{ review.rating }}</p>
+        <p>{{ review.review_date}}</p>
+        <a href="{% url 'appmala:review' review.id %}">...more</a>
+      </div>
+      {%endfor %}
+    </div>
     </p>
 
     # 댓글
