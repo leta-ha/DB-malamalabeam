@@ -7,8 +7,14 @@
                     font-weight: normal;
                     font-style: normal;
                 }
+    .store {
+      border: 1px solid silver;
+      border-radius: 10px;
+      padding: 20px 10px;
+    }
     </style>
     <p style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
+    <div class="store">
     <h1>{{ store.store_name }}</h1>
       <p>{{ store.address }}</p>
       <p>{{ store.rating }}</p>
@@ -20,7 +26,7 @@
     <a href="{% url 'home' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>Home</button></a>
     <a href="{% url 'appmala:delete' store.id %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>Delete</button></a>
     <a href="{% url 'appmala:newreview' store.id %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>New Review</button></a>
-    <hr>
+    </div>
     <div class="container" style="margin-top: 40px;">
       {% for review in reviews %}
       <div>
@@ -28,7 +34,8 @@
         <h3>{{ review.title }}</h3>
 		    <p>{{ review.rating }}</p>
         <p>{{ review.review_date}}</p>
-        <a href="{% url 'appmala:review' review.id %}">...more</a>
+        <a href="{% url 'appmala:review' review.id %}"><button>more</button></a>
+        <hr>
       </div>
       {%endfor %}
     </div>
