@@ -17,7 +17,7 @@
         <img src="{{review.image.url}}" alt="" />
         {% endif %}
       <p>{{ review.content }}</p>
-    <a href="{% url 'appmala:detail' review.store_id %}">Back</a>
-    <a href="{% url 'appmala:deleteReview' review.id %}">Delete</a>
+    <a href="{% url 'appmala:detail' review.store_id %}"><button>Back</button></a>
+    <a href="{% url 'appmala:deleteReview' review.id %}"><button>Delete</button></a>
     </p>
  {% endblock %}
