@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+
+/*reivew 상세*/
     {% block content %}
     <style>
     @font-face {
@@ -7,10 +9,18 @@
                     font-weight: normal;
                     font-style: normal;
                 }
+    .review {
+      border: 1px solid silver;
+      border-radius: 10px;
+      padding: 20px 10px;
+      }
+    
     </style>
-    <p style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
+    <p style="font-family: 'GmarketSansBold'; margin-top: 40px; margin-bottom: 20px; font-size: 10pt;">
+    <h3 style="text-align: left; flex:3; font-family: 'GmarketSansBold'; font-size: 30pt;">REVIEW</h3>     
+    <div class="review">
     <h1>{{ review.title }}</h1>
-      <p>유저: {{review.user}}</p>
+      <p>{{review.user}}</p>
       <p>{{ review.review_date }}</p>
       <p>{{ review.rating }}</p>
         {% if review.image %}
@@ -19,5 +29,29 @@
       <p>{{ review.content }}</p>
     <a href="{% url 'appmala:detail' review.store_id %}">Back</a>
     <a href="{% url 'appmala:deleteReview' review.id %}">Delete</a>
+    </div>
     </p>
+
+    <div>
+        <div>
+        {% for comment in comments %}
+        <span style="text-indent: 8pt;">
+        <h5>{{ comment.comment_content }}</h5>
+        <p>{{ comment.user}}</p>
+        <p style:font-size:25pt>{{ comment.comment_date }}</p></span><hr/>
+        {% endfor %}
+        </div>
+
+        <form method="POST" action="{% url 'appmala:create_comment' %}">
+            {% csrf_token %}
+            <div>
+                <label for="content">댓글</label><br>
+                <div id="maketext">
+                    <input name="reveiw_id" value="{{review.id}}" hidden>
+                    <textarea name="comment_content" width=100%>{{ form.content.value|default_if_none:'' }}</textarea>
+                    <button type="submit" style="width: 100px; text-align: center;">저장하기</button>
+                </div>
+            </div>  
+        </form>
+    </div>
  {% endblock %}

@@ -7,8 +7,14 @@
                     font-weight: normal;
                     font-style: normal;
                 }
+    .store {
+        border: 1px solid silver;
+        border-radius: 10px;
+        padding: 20px 10px;
+        }
     </style>
     <p style="font-family: 'GmarketSansBold'; margin-top: 40px;margin-bottom: 20px; font-size: 10pt;">
+    <div class="store">    
     <h1>{{ store.store_name }}</h1>
       <p>{{ store.address }}</p>
       <p>{{ store.rating }}</p>
@@ -19,6 +25,7 @@
     <a href="{% url 'home' %}">Home</a>
     <a href="{% url 'appmala:delete' store.id%}">Delete</a>
     <a href="{% url 'appmala:newreview' store.id%}">New Review</a>
+    </div>
     <div class="container">
       {% for review in reviews %}
       <div>
@@ -27,46 +34,10 @@
 		    <p>{{ review.rating }}</p>
         <p>{{ review.review_date}}</p>
         <a href="{% url 'appmala:review' review.id %}">...more</a>
+        <hr/>
       </div>
       {%endfor %}
     </div>
     </p>
-
-    # 댓글
-    <div>
-        {% if question.comment_set.count > 0 %}
-        {% for comment in question.comment_set.all %}
-            <span>{{ comment.content }}</span>
-            <span>
-            글쓴이: {{ comment.author }}
-        </span>
-        {% endfor %}
-        {% endif %}
-    </div>
-    <div>
-        <div>
-        {% for comment in comments %}
-        <h5>{{ comment.user }}</h5>
-        <span style="text-indent: 20px;">
-        <h5>{{ comment.comment_content }}</h5>
-        <h6>{{ comment.comment_date }}</h6></span><hr/>
-        {% endfor %}
-        </div>
-        
-        <form method="post" action="{% url 'appmala:create_comment' %}">
-            {% csrf_token %}
-            <div>
-                <label for="content">한 줄 평가</label><br>
-                <div id="maketext">
-                    <input name="reveiw_id" value="{{review.id}}" hidden>
-                    <textarea name="comment_content" width=100%>{{ form.content.value|default_if_none:'' }}</textarea>
-                    <button type="submit" style="width: 100px; text-align: center;">저장하기</button>
-                </div>
-            </div>
-            
-        </form>
-    </div>
-
-
 
  {% endblock %}
