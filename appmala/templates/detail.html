@@ -21,7 +21,7 @@
       <p>{{ store.rating }}</p>
       <p>{{ store.phone_num }}</p>
         {% if store.image %}
-        <img src="{{store.image.url}}" alt="" />
+        <img src="{{store.image.url}" alt="" />
         {% endif %}
     <br>
     <a href="{% url 'home' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>Home</button></a>
@@ -41,4 +41,5 @@
       {%endfor %}
     </div>
     </p>
+
  {% endblock %}
