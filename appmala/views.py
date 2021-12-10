@@ -11,23 +11,29 @@ import json
 
 # Create your views here.
 def home(request):
-    bookmark_page = False;
-    if request.path_info=="/bookmarks":
-        bookmark_page = True;
-    query= request.GET.get('query')
+    
+    query = request.GET.get('query')
+    
     if query:
         stores= Store.objects.filter(store_name__icontains=query)
     else:
         stores= Store.objects.all()
     
-    bookmarks = [bmk.store_id for bmk in Bookmark.objects.all()]  
-    if bookmark_page:
-        stores= Store.objects.filter(pk__in=bookmarks)
-
+    
+    bookmarks = [] 
+    print(request.user.id)
+    if request.user.id:
+        bookmarks = [bmk.store_id for bmk in Bookmark.objects.all() if bmk.user_id == request.user.id] 
+    
+    if request.path_info=="/bookmarks":
+        print(bookmarks)
+        stores = Store.objects.filter(pk__in=bookmarks)
+        print(stores)
+        
     paginator= Paginator(stores, 6)
     page= request.GET.get('page')
-    query = request.GET.get('query')
     paginated_stores= paginator.get_page(page)
+    
     if query:
         return render(request, 'home.html', {'stores': paginated_stores, 'query': query,'bookmarks': bookmarks})
     else:
