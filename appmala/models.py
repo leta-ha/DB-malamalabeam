@@ -49,12 +49,12 @@ class Review(models.Model):
 	    return self.title
         
 class Comment(models.Model): 
-    comment_id = models.CharField(max_length=20)
+    #comment_id = models.CharField(max_length=20, null=True)
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
-    review_id = models.ForeignKey(Review, null=True, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, related_name="comments")
     comment_content = models.CharField(max_length=500, null=False)
     comment_date = models.DateTimeField(default=timezone.now)
     class Meta:
         ordering = ['comment_date']
     def __str__(self):
-	    return self.comment_id
+	    return self.comment_content
