@@ -30,7 +30,9 @@
     <div class="container" style="margin-top: 40px;">
       {% for review in reviews %}
       <div>
-        {{ review.image }}
+        {% if review.image %}
+        <img src="{{review.image.url}}" alt="" />
+        {% endif %}
         <h3>{{ review.title }}</h3>
 		    <p>{{ review.rating }}</p>
         <p>{{ review.review_date}}</p>

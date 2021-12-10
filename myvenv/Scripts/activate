@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\82107\Desktop\Coding\test\DB-malamalabeam-1\myvenv"
+VIRTUAL_ENV="C:\Users\주현\Desktop\프로젝트\DB-malamalabeam\myvenv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

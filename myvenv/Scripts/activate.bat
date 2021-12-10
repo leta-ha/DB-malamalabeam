@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\82107\Desktop\Coding\test\DB-malamalabeam-1\myvenv
+set VIRTUAL_ENV=C:\Users\주현\Desktop\프로젝트\DB-malamalabeam\myvenv
 
 if not defined PROMPT set PROMPT=$P$G
 

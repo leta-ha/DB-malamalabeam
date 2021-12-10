@@ -13,7 +13,6 @@ urlpatterns = [
     path('newreview/createReview/<int:store_id>', views.createReview, name='createReview'),
     path('deleteReview/<int:id>', views.deleteReview, name="deleteReview"),
     path('<int:id>/review/', views.review, name='review'),
-
     # path('<int:id>/', views.detail, name="review-detail"),
     # path('<int:id>/review/create/', views.review_create, name='review-create'),
     # path('<int:id>/review/delete/<int:review_id>', views.review_delete, name='review-delete')

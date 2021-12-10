@@ -2,27 +2,37 @@ from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 #from .models import Appmala
-from .models import Store, Bookmark, Review, Comment
+from .models import Store, Bookmark, Review, Comment, CustomUser
 from .forms import AppmalaForm, ReviewForm
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+import json
 
 # Create your views here.
 def home(request):
+    bookmark_page = False;
+    if request.path_info=="/bookmarks":
+        bookmark_page = True;
     query= request.GET.get('query')
     if query:
         stores= Store.objects.filter(store_name__icontains=query)
     else:
         stores= Store.objects.all()
+    
+    bookmarks = [bmk.store_id for bmk in Bookmark.objects.all()]  
+    if bookmark_page:
+        stores= Store.objects.filter(pk__in=bookmarks)
 
     paginator= Paginator(stores, 6)
     page= request.GET.get('page')
     query = request.GET.get('query')
     paginated_stores= paginator.get_page(page)
     if query:
-        return render(request, 'home.html', {'stores': paginated_stores, 'query': query})
+        return render(request, 'home.html', {'stores': paginated_stores, 'query': query,'bookmarks': bookmarks})
     else:
-        return render(request, 'home.html', {'stores': paginated_stores})
-
+        return render(request, 'home.html', {'stores': paginated_stores, 'bookmarks': bookmarks})
+    
 # def detail(request):
 #     reviews = Review.objects.all()
 #     query = request.GET.get('query')
@@ -88,3 +98,18 @@ def deleteReview(request, id):
    review = Review.objects.get(id=id)
    review.delete()
    return redirect("appmala:detail", review.store_id)
+
+@csrf_exempt
+def createBookmark(request):
+    data = json.loads(request.body)
+    about_store = Store.objects.get(id = int(data["store_id"]))
+    bookmark = Bookmark.objects.create(user = request.user, store = about_store)
+    bookmark.save()
+    return HttpResponse()
+    
+@csrf_exempt
+def deleteBookmark(request):
+    data = json.loads(request.body)
+    about_store = Store.objects.get(id = int(data["store_id"]))
+    Bookmark.objects.filter(user = request.user, store = about_store).delete()
+    return HttpResponse()

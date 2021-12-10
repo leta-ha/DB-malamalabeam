@@ -1,4 +1,4 @@
-#!c:\users\82107\desktop\coding\test\db-malamalabeam-1\myvenv\scripts\python.exe
+#!c:\users\주현\desktop\프로젝트\db-malamalabeam\myvenv\scripts\python.exe
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 
