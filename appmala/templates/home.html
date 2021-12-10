@@ -154,12 +154,12 @@
     <script type="text/javascript">
         for(dom of document.getElementsByClassName("bookmark")){
             dom.addEventListener("click", (event)=>{
-                var url = document.location.href
-                console.log(JSON.stringify({store_id:event.target.id}))
+                var url = document.location.origin;
+                console.log(url,JSON.stringify({store_id:event.target.id}))
                 var createcolor = "rgb(170, 169, 169)"
                 var deletecolor = "rgb(255, 208, 0)"
                 if(event.target.style.color == createcolor){
-                    fetch(url+'createBookmark', {
+                    fetch(url+'/createBookmark', {
                         method: 'post',
                         body: JSON.stringify({store_id:event.target.id})
                       })
@@ -167,7 +167,7 @@
                             event.target.style.color = deletecolor
                       })
                 }else{
-                    fetch(url+'deleteBookmark', {
+                    fetch(url+'/deleteBookmark', {
                         method: 'post',
                         body: JSON.stringify({store_id:event.target.id})
                       })
