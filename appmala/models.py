@@ -21,7 +21,7 @@ class Store(models.Model):
     #user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
     store_name = models.CharField(max_length=20, null=False)
     address = models.CharField(max_length=20)
-    rating = models.FloatField(max_length=20)
+    rating = models.FloatField(default=0, null=False)
     image = models.ImageField(upload_to="store/", blank=True, null=True)
     phone_num = models.CharField(max_length=20)
     def __str__(self):
@@ -40,7 +40,7 @@ class Review(models.Model):
     store = models.ForeignKey(Store, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, null=False)
     content = models.CharField(max_length=500, null=False)
-    rating = models.IntegerField(max_length=20, null=False, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating = models.IntegerField(null=False, validators=[MinValueValidator(0), MaxValueValidator(5)])
     image = models.ImageField(upload_to="review/", blank=True, null=True)
     review_date = models.DateTimeField(default=timezone.now)
     class Meta:

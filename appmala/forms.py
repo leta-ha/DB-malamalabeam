@@ -5,7 +5,7 @@ from .models import Review
 class AppmalaForm(forms.ModelForm):
     class Meta:
         model = Store
-        fields = ['store_name','address', 'rating','image', 'phone_num']
+        fields = ['store_name','address','image', 'phone_num']
 
 class ReviewForm(forms.ModelForm):
     class Meta:

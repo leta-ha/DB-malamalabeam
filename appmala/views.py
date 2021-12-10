@@ -7,11 +7,12 @@ from .forms import AppmalaForm, ReviewForm
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.db.models import Avg, Count
 import json
 
 # Create your views here.
 def home(request):
-    
+    print(Review.objects.values('rating').annotate(Avg('rating')).order_by())
     query = request.GET.get('query')
     
     if query:
@@ -19,17 +20,14 @@ def home(request):
     else:
         stores= Store.objects.all()
     
-    
     bookmarks = [] 
-    print(request.user.id)
+    print(stores)
     if request.user.id:
         bookmarks = [bmk.store_id for bmk in Bookmark.objects.all() if bmk.user_id == request.user.id] 
     
     if request.path_info=="/bookmarks":
-        print(bookmarks)
         stores = Store.objects.filter(pk__in=bookmarks)
-        print(stores)
-        
+    
     paginator= Paginator(stores, 6)
     page= request.GET.get('page')
     paginated_stores= paginator.get_page(page)
@@ -89,7 +87,7 @@ def delete(request, id):
 def createReview(request, store_id):
     form = ReviewForm(request.POST, request.FILES)
     item =  get_object_or_404(Store, pk = store_id)
-
+    
     if form.is_valid():  
         new_review = form.save(commit=False) 
         new_review.pub_date = timezone.now()
@@ -97,11 +95,19 @@ def createReview(request, store_id):
             new_review.user = request.user
             new_review.store = item
         new_review.save()
+        rating = Review.objects.filter(store_id=store_id).aggregate(Avg('rating'))
+        stores = Store.objects.get(id = store_id)
+        stores.rating = rating["rating__avg"]
+        stores.save()
         return redirect('appmala:review', new_review.id)
     return redirect('home')
 
 def deleteReview(request, id):
     review = Review.objects.get(id=id)
+    rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating'))
+    stores = Store.objects.get(id = review.store_id)
+    stores.rating = rating["rating__avg"]
+    stores.save()
     review.delete()
     return redirect("appmala:detail", review.store_id)
 
