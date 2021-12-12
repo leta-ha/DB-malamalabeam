@@ -2,28 +2,41 @@ from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 #from .models import Appmala
-from .models import Store, Bookmark, Review, Comment
+from .models import Store, Bookmark, Review, Comment, CustomUser
 from .forms import AppmalaForm, ReviewForm
 from django.core.paginator import Paginator
-from user.models import CustomUser
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.db.models import Avg, Count
+import json
 
 # Create your views here.
 def home(request):
-    query= request.GET.get('query')
+    print(Review.objects.values('rating').annotate(Avg('rating')).order_by())
+    query = request.GET.get('query')
+    
     if query:
         stores= Store.objects.filter(store_name__icontains=query)
     else:
         stores= Store.objects.all()
-
+    
+    bookmarks = [] 
+    print(stores)
+    if request.user.id:
+        bookmarks = [bmk.store_id for bmk in Bookmark.objects.all() if bmk.user_id == request.user.id] 
+    
+    if request.path_info=="/bookmarks":
+        stores = Store.objects.filter(pk__in=bookmarks)
+    
     paginator= Paginator(stores, 6)
     page= request.GET.get('page')
-    query = request.GET.get('query')
     paginated_stores= paginator.get_page(page)
+    
     if query:
-        return render(request, 'home.html', {'stores': paginated_stores, 'query': query})
+        return render(request, 'home.html', {'stores': paginated_stores, 'query': query,'bookmarks': bookmarks})
     else:
-        return render(request, 'home.html', {'stores': paginated_stores})
-
+        return render(request, 'home.html', {'stores': paginated_stores, 'bookmarks': bookmarks})
+    
 # def detail(request):
 #     reviews = Review.objects.all()
 #     query = request.GET.get('query')
@@ -74,7 +87,7 @@ def delete(request, id):
 def createReview(request, store_id):
     form = ReviewForm(request.POST, request.FILES)
     item =  get_object_or_404(Store, pk = store_id)
-
+    
     if form.is_valid():  
         new_review = form.save(commit=False) 
         new_review.pub_date = timezone.now()
@@ -82,13 +95,22 @@ def createReview(request, store_id):
             new_review.user = request.user
             new_review.store = item
         new_review.save()
+        rating = Review.objects.filter(store_id=store_id).aggregate(Avg('rating'))
+        stores = Store.objects.get(id = store_id)
+        stores.rating = rating["rating__avg"]
+        stores.save()
         return redirect('appmala:review', new_review.id)
     return redirect('home')
 
 def deleteReview(request, id):
     review = Review.objects.get(id=id)
+    rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating'))
+    stores = Store.objects.get(id = review.store_id)
+    stores.rating = rating["rating__avg"]
+    stores.save()
     review.delete()
     return redirect("appmala:detail", review.store_id)
+
 
 def create_comment(request):
     if request.method == "POST":
@@ -106,3 +128,19 @@ def create_comment(request):
         return redirect('appmala:review', comment.review_id)
     else:
         return redirect('home')
+    
+@csrf_exempt
+def createBookmark(request):
+    data = json.loads(request.body)
+    about_store = Store.objects.get(id = int(data["store_id"]))
+    bookmark = Bookmark.objects.create(user = request.user, store = about_store)
+    bookmark.save()
+    return HttpResponse()
+    
+@csrf_exempt
+def deleteBookmark(request):
+    data = json.loads(request.body)
+    about_store = Store.objects.get(id = int(data["store_id"]))
+    Bookmark.objects.filter(user = request.user, store = about_store).delete()
+    return HttpResponse()
+    

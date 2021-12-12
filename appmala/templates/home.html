@@ -46,20 +46,33 @@
                     padding: 50px;
                     justify-content:center;
                     display: grid;
-                    grid-template-rows:400px 400px;
+                    grid-template-rows:470px 470px;
                     grid-template-columns: 300px 300px 300px;
                 }
                 .content{
+                    display: flex;
+                    flex-direction: column;
                     color: black;
                     text-decoration: none;
                     border: 1px solid silver;
                     margin: 10px;
                     border-radius: 10px;
                 }
-                .content > div{
-                    margin:5px auto;
-                    height: 60%;
-                    width: 80%;
+                a{
+                    color: black;
+                    text-decoration: none;
+                }
+                .content .inner{
+                    margin:auto;
+                    height: fit-content;
+                }
+                .content p, h3{
+                    padding: 3px;
+                    margin:auto;
+                }
+                .content .inner img{
+                    height: 100%;
+                    width: 100%;
                 }
                 .pagenator{
                     padding: 30px;
@@ -68,13 +81,28 @@
                 .pageLink{
                     text-decoration: none;
                 }
+                .bookmark{
+                    font-size: x-large;
+                    padding-left: 10px;
+                }
+                .bookmark:hover{
+                    color: rgb(255, 208, 0);
+                    cursor:pointer
+                }
             </style>
         </head>
+        
     <div style="text-align: left; display:flex; padding:20px;  flex-flow: row; align-content:center; border-bottom:1px solid black; ">
         <h3 style="flex:3; font-family: 'GmarketSansBold'; font-size: 30pt;">🔥마라위키🔥</h3>
-        <a href="{% url 'appmala:newstore' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>New Store</button></a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'bookmarks' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;">
+                <button>Bookmarks</button>
+            </a>
+        {% endif %}
+        <a href="{% url 'appmala:newstore' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;">
+            <button>New Store</button>
+        </a>
     </div>
-    
      {% comment %} <form action="{% url 'home' %}">
       <p>제목으로 게시글 검색</p>
       <input type="text" name="query">
@@ -82,13 +110,30 @@
     <div class="container">
         <div id="contentContainer">
         {% for store in stores %}
-            <a class="content" href="{% url 'appmala:detail' store.id %}">
-                <div id="image"><img src="{{store.image}}" alt="none image"></div>
-                <h3>{{ store.store_name }}</h3>
-                <p>{{ store.address}}</p>
-                <p>{{ store.phone_num}}</p>
-                <span style="float:right; padding-right:20px">평점 {{ store.rating }}</span>
+        <div class="content">
+            {% if user.is_authenticated %}
+            <span style="flex:1; text-align:right; padding-right:20px; font-size:large" >bookmark 
+                {% if store.id in bookmarks %}
+                <a id="{{store.id}}" style="color:rgb(255, 208, 0)" class="bookmark">★</a>
+                {% else %}
+                <a id="{{store.id}}" style="color:rgb(170, 169, 169)" class="bookmark">★</a>
+                {% endif %}
+            </span>
+            {% endif %}
+            <a style="flex:12; display:flex; flex-direction:column" href="{% url 'appmala:detail' store.id %}">
+                <div style="flex:8;" class="inner">
+                    {% if store.image %}
+                    <img src="{{store.image.url}}" alt="none image">
+                    {% else %}
+                    <img alt="none image">
+                    {% endif %}
+                </div>
+                <h3 style="flex:1;">{{ store.store_name }}</h3>
+                <p style="flex:1;">{{ store.address}}</p>
+                <p style="flex:1;">{{ store.phone_num}}</p>
+                <span style="flex:1; text-align:right; padding-right:20px;">평점 {{ store.rating }}</span>
             </a>
+        </div>
         {%endfor %}
         </div>
       <div class="pagenator">
@@ -106,5 +151,34 @@
         </div>
       </div>
     </div>
+    <script type="text/javascript">
+        for(dom of document.getElementsByClassName("bookmark")){
+            dom.addEventListener("click", (event)=>{
+                var url = document.location.origin;
+                console.log(url,JSON.stringify({store_id:event.target.id}))
+                var createcolor = "rgb(170, 169, 169)"
+                var deletecolor = "rgb(255, 208, 0)"
+                if(event.target.style.color == createcolor){
+                    fetch(url+'/createBookmark', {
+                        method: 'post',
+                        body: JSON.stringify({store_id:event.target.id})
+                      })
+                      .then(res => {
+                            event.target.style.color = deletecolor
+                      })
+                }else{
+                    fetch(url+'/deleteBookmark', {
+                        method: 'post',
+                        body: JSON.stringify({store_id:event.target.id})
+                      })
+                      .then(res => {
+                            event.target.style.color = createcolor
+                      })
+                }
+               
+            })
+        }
+    
+    </script>
     {% endblock %}
     
