@@ -10,8 +10,9 @@ urlpatterns = [
     path('delete/<int:id>', views.delete, name="delete"),
     path('create_comment/', views.create_comment, name='create_comment'),
     
-    path('<int:id>/newreview/', views.newreview, name='newreview'),
-    path('newreview/createReview/<int:store_id>', views.createReview, name='createReview'),
-    path('deleteReview/<int:id>', views.deleteReview, name="deleteReview"),
-    path('<int:id>/review/', views.review, name='review'),
+    path('<int:id>/newreview/', views.newreview, name='newreview'), 
+    path('newreview/createReview/<int:store_id>', views.createReview, name='createReview'), 
+    path('deleteReview/<int:id>', views.deleteReview, name="deleteReview"), 
+    path('<int:id>/review/', views.review, name='review'), 
+    
 ]

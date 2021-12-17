@@ -45,18 +45,19 @@ def detail(request, id):
     reviews = Review.objects.filter(store=id) #해당 가게에 작성된 리뷰들을 필터
     return render(request, 'detail.html', {'store': store, 'reviews': reviews}) #가게와 리뷰 정보를 가지고 가게 상세 페이지로 이동
 
+# 리뷰 상세 페이지
 def review(request, id):
-    review = get_object_or_404(Review, pk = id)
-    comments = Comment.objects.filter(review=id)
-    return render(request, 'review.html', {'review': review, 'comments': comments})
+    review = get_object_or_404(Review, pk = id) 
+    comments = Comment.objects.filter(review=id) # 해당 리뷰에 달린 댓글들을 필터
+    return render(request, 'review.html', {'review': review, 'comments': comments}) #리뷰와 댓글 정보를 가지고 리뷰 상세 페이지로 이동
 
 def newstore(request):
     form = AppmalaForm()
     return render(request, 'newstore.html', {'form':form})
-
+ 
 def newreview(request, id):
-    form = ReviewForm()
-    store = get_object_or_404(Store, pk=id)
+    form = ReviewForm() 
+    store = get_object_or_404(Store, pk=id) 
     return render(request, 'newreview.html', {'form':form, 'store': store})
 
 #가게 등록 함수
@@ -75,32 +76,34 @@ def delete(request, id):
     store.delete()
     return redirect("home") #삭제한 후 메인 페이지(home)으로 이동
 
+# 리뷰 등록 함수
 def createReview(request, store_id):
-    form = ReviewForm(request.POST, request.FILES)
-    item =  get_object_or_404(Store, pk = store_id)
+    form = ReviewForm(request.POST, request.FILES) 
+    item =  get_object_or_404(Store, pk = store_id) 
     
-    if form.is_valid():  
-        new_review = form.save(commit=False) 
-        new_review.pub_date = timezone.now()
-        if request.user.is_authenticated:
+    if form.is_valid():  # 유효성 검사
+        new_review = form.save(commit=False) #임시 저장 나머지 필드(칼럼)를 채우기 위함
+        new_review.pub_date = timezone.now() #현재시간
+        if request.user.is_authenticated: 
             new_review.user = request.user
             new_review.store = item
-        new_review.save()
-        rating = Review.objects.filter(store_id=store_id).aggregate(Avg('rating'))
+        new_review.save() 
+        rating = Review.objects.filter(store_id=store_id).aggregate(Avg('rating')) #가게의 리뷰들의 별점의 평균
         stores = Store.objects.get(id = store_id)
-        stores.rating = rating["rating__avg"]
-        stores.save()
-        return redirect('appmala:review', new_review.id)
-    return redirect('home')
+        stores.rating = rating["rating__avg"] # 가게 평균 별점 정보 갱신
+        stores.save() 
+        return redirect('appmala:review', new_review.id) #리뷰가 정상적으로 등록되었다면 해당 리뷰 정보 페이지로 이동
+    return redirect('home') #메인 페이지(home)으로 이동
 
+# 리뷰 삭제 함수
 def deleteReview(request, id):
     review = Review.objects.get(id=id)
-    rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating'))
-    stores = Store.objects.get(id = review.store_id)
-    stores.rating = rating["rating__avg"]
-    stores.save()
-    review.delete()
-    return redirect("appmala:detail", review.store_id)
+    rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating')) # 리뷰의 평점
+    stores = Store.objects.get(id = review.store_id) 
+    stores.rating = rating["rating__avg"] # 가게 평균 별점 정보 갱신
+    stores.save() 
+    review.delete() # 리뷰 삭제
+    return redirect("appmala:detail", review.store_id) #삭제한 후 메인 페이지(home)으로 이동
 
 
 def create_comment(request):

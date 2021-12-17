@@ -7,6 +7,7 @@ class AppmalaForm(forms.ModelForm):
         model = Store
         fields = ['store_name','address','image', 'phone_num']
 
+# 리뷰 작성 form
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
