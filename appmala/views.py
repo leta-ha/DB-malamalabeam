@@ -11,14 +11,15 @@ from django.db.models import Avg, Count
 import json
 
 # Create your views here.
+#메인, 홈 화면
 def home(request):
     print(Review.objects.values('rating').annotate(Avg('rating')).order_by())
     query = request.GET.get('query')
     
     if query:
-        stores= Store.objects.filter(store_name__icontains=query)
+        stores= Store.objects.filter(store_name__icontains=query) #입력한 쿼리에 맞는 가게 이름들을 필터
     else:
-        stores= Store.objects.all()
+        stores= Store.objects.all() #쿼리가 없는 경우 모든 가게를 받아오기
     
     bookmarks = [] 
     print(stores)
@@ -28,31 +29,21 @@ def home(request):
     if request.path_info=="/bookmarks":
         stores = Store.objects.filter(pk__in=bookmarks)
     
-    paginator= Paginator(stores, 6)
+    #페이지네이터
+    paginator= Paginator(stores, 6) #한 페이지에 가게 6개 보여주도록 설정
     page= request.GET.get('page')
     paginated_stores= paginator.get_page(page)
     
-    if query:
-        return render(request, 'home.html', {'stores': paginated_stores, 'query': query,'bookmarks': bookmarks})
+    if query: #쿼리가 있는 경우 (search)
+        return render(request, 'home.html', {'stores': paginated_stores, 'query': query,'bookmarks': bookmarks}) #쿼리 정보까지 포함하여 홈 화면 불러오기
     else:
-        return render(request, 'home.html', {'stores': paginated_stores, 'bookmarks': bookmarks})
-    
-# def detail(request):
-#     reviews = Review.objects.all()
-#     query = request.GET.get('query')
-#     if query:
-#         reviews = Review.objects.filter(title__icontains=query)
+        return render(request, 'home.html', {'stores': paginated_stores, 'bookmarks': bookmarks}) #가게 정보와 즐겨찾기 기능만 포함하여 홈 화면 불러오기
 
-#     paginator = Paginator(reviews, 5) # stores를 5개씩 쪼갠다
-#     page = request.GET.get('page') # 해당 정보가 오지 않아도 넘어간다
-#     paginated_reviews = paginator.get_page(page)
-#     return render(request, 'review.html', {'reviews': paginated_reviews})
-
+#가게 상세 정보
 def detail(request, id):
     store = get_object_or_404(Store, pk = id)
-    reviews = Review.objects.filter(store=id)
-    # comments = Comment.objects.filter(comment_id=id)
-    return render(request, 'detail.html', {'store': store, 'reviews': reviews})
+    reviews = Review.objects.filter(store=id) #해당 가게에 작성된 리뷰들을 필터
+    return render(request, 'detail.html', {'store': store, 'reviews': reviews}) #가게와 리뷰 정보를 가지고 가게 상세 페이지로 이동
 
 def review(request, id):
     review = get_object_or_404(Review, pk = id)
@@ -68,21 +59,21 @@ def newreview(request, id):
     store = get_object_or_404(Store, pk=id)
     return render(request, 'newreview.html', {'form':form, 'store': store})
 
+#가게 등록 함수
 def create(request):
-    form = AppmalaForm(request.POST, request.FILES) # form 데이터를 처리하기 위해서 request.POST와 request.FILES가 필요함을 의미합니다.
-    if form.is_valid(): # 유효성 검사 
-        new_store = form.save(commit=False) # 임시 저장 나머지 필드(칼럼)를 채우기 위함
-        new_store.pub_date = timezone.now()
-        # if request.user.is_authenticated:
-        #     new_store.user = request.user
+    form = AppmalaForm(request.POST, request.FILES) #form 데이터를 처리하기 위해서 request.POST와 request.FILES가 필요
+    if form.is_valid(): #유효성 검사 
+        new_store = form.save(commit=False) #임시 저장 나머지 필드(칼럼)를 채우기 위함
+        new_store.pub_date = timezone.now() #현재시간
         new_store.save()
-        return redirect('appmala:detail', new_store.id)
-    return redirect('home')
+        return redirect('appmala:detail', new_store.id) #가게가 정상적으로 등록되었다면 해당 가게 정보 페이지로 이동
+    return redirect('home') #메인 페이지(home)으로 이동
 
+#가게 정보 삭제 함수
 def delete(request, id):
     store = Store.objects.get(id=id)
     store.delete()
-    return redirect("home")
+    return redirect("home") #삭제한 후 메인 페이지(home)으로 이동
 
 def createReview(request, store_id):
     form = ReviewForm(request.POST, request.FILES)

@@ -1,4 +1,4 @@
-from django import forms    # 장고가 제공해주는 form라이브러리
+from django import forms    # 장고가 제공하는 form라이브러리
 from .models import Store
 from .models import Review
 

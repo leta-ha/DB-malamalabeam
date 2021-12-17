@@ -24,8 +24,14 @@
         <img src="{{store.image.url}}" alt="" />
         {% endif %}
     <br>
+
+    <!--메인페이지(home)으로 이동-->
     <a href="{% url 'home' %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>Home</button></a>
+
+    <!--가게 정보 삭제-->
     <a href="{% url 'appmala:delete' store.id %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>Delete</button></a>
+    
+    <!--가게 리뷰 작성-->
     <a href="{% url 'appmala:newreview' store.id %}" style=" flex:1; height: 50%; margin:auto; text-align:center;"><button>New Review</button></a>
     </div>
     </p>
