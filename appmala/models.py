@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-
+# 가게 테이블
 class Store(models.Model): 
     store_name = models.CharField(max_length=20, null=False)
     address = models.CharField(max_length=20)
@@ -14,12 +14,14 @@ class Store(models.Model):
     def __str__(self):
 	    return self.store_name
 
+# 즐겨찾기 테이블
 class Bookmark(models.Model): 
     user = models.ForeignKey(CustomUser,  null=True, on_delete=models.CASCADE)
     store = models.ForeignKey(Store , null=True, on_delete=models.CASCADE)
     def __str__(self):
 	    return self.bookmark_id
 
+# 리뷰 테이블
 class Review(models.Model): 
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
     store = models.ForeignKey(Store, null=True, on_delete=models.CASCADE)
@@ -32,7 +34,8 @@ class Review(models.Model):
         ordering = ['review_date']
     def __str__(self):
 	    return self.title
-        
+
+# 댓글 테이블         
 class Comment(models.Model): 
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, related_name="comments")
