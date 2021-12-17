@@ -51,10 +51,12 @@ def review(request, id):
     comments = Comment.objects.filter(review=id) # 해당 리뷰에 달린 댓글들을 필터
     return render(request, 'review.html', {'review': review, 'comments': comments}) #리뷰와 댓글 정보를 가지고 리뷰 상세 페이지로 이동
 
+# 가게 등록 페이지 호출
 def newstore(request):
     form = AppmalaForm()
     return render(request, 'newstore.html', {'form':form})
- 
+
+# 리뷰 등록 페이지 호출
 def newreview(request, id):
     form = ReviewForm() 
     store = get_object_or_404(Store, pk=id) 
