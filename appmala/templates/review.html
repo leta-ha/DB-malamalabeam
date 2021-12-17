@@ -24,7 +24,7 @@
       <p>{{ review.review_date }}</p>        
       <p>{{ review.rating }}</p>            
         {% if review.image %}               
-        <img src="{{review.image.url}}" alt="" /> 
+        <img src="{{review.image.url}}" alt="" style="width:700px; height:500px;"/> 
         {% endif %}
       <p>{{ review.content }}</p>           
     <a href="{% url 'appmala:detail' review.store_id %}"><button>Back</button></a> <!-- 가게 상세 페이지로 이동 --> 
