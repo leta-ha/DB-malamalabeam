@@ -113,7 +113,7 @@
         <!-- 스토어를 그리드 형식으로 렌더링 -->
         {% for store in stores %}
         <div class="content">
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated %} <!--유저가 존재하는 경우 북마크 기능 사용 가능-->
             <span style="flex:1; text-align:right; padding-right:20px; font-size:large" >bookmark 
                 {% if store.id in bookmarks %}
                 <a id="{{store.id}}" style="color:rgb(255, 208, 0)" class="bookmark">★</a>
@@ -122,6 +122,8 @@
                 {% endif %}
             </span>
             {% endif %}
+            
+            <!--가게의 아이디를 받아서 디테일 페이지로 이동-->
             <a style="flex:12; display:flex; flex-direction:column" href="{% url 'appmala:detail' store.id %}">
                 <div style="flex:8;" class="inner">
                     {% if store.image %}
@@ -131,8 +133,8 @@
                     {% endif %}
                 </div>
                 <h3 style="flex:1;">{{ store.store_name }}</h3>
-                <p style="flex:1;">{{ store.address}}</p>
-                <p style="flex:1;">{{ store.phone_num}}</p>
+                <p style="flex:1;">{{ store.address }}</p>
+                <p style="flex:1;">{{ store.phone_num }}</p>
                 <span style="flex:1; text-align:right; padding-right:20px;">평점 {{ store.rating }}</span>
             </a>
         </div>

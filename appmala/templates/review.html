@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-/*reivew 상세*/
+<!--reivew 상세-->
     {% block content %}
     <style>
     @font-face {
@@ -13,45 +13,44 @@
       border: 1px solid silver;
       border-radius: 10px;
       padding: 20px 10px;
-      }
-    
+      }  
     </style>
+    <!-- 리뷰 상세 정보 -->
     <p style="font-family: 'GmarketSansBold'; margin-top: 40px; margin-bottom: 20px; font-size: 10pt;">
     <h3 style="text-align: left; flex:3; font-family: 'GmarketSansBold'; font-size: 30pt;">REVIEW</h3>     
     <div class="review">
-    <h1>{{ review.title }}</h1>
-      <p>{{review.user}}</p>
-      <p>{{ review.review_date }}</p>
-      <p>{{ review.rating }}</p>
-        {% if review.image %}
-        <img src="{{review.image.url}}" alt="" />
+    <h1>{{ review.title }}</h1>              
+      <p>{{review.user}}</p>                
+      <p>{{ review.review_date }}</p>        
+      <p>{{ review.rating }}</p>            
+        {% if review.image %}               
+        <img src="{{review.image.url}}" alt="" /> 
         {% endif %}
-      <p>{{ review.content }}</p>
-    <a href="{% url 'appmala:detail' review.store_id %}"><button>Back</button></a>
-    <a href="{% url 'appmala:deleteReview' review.id %}"><button>Delete</button></a>
+      <p>{{ review.content }}</p>           
+    <a href="{% url 'appmala:detail' review.store_id %}"><button>Back</button></a> <!-- 가게 상세 페이지로 이동 --> 
+    <a href="{% url 'appmala:deleteReview' review.id %}"><button>Delete</button></a> <!-- 리뷰 삭제  --> 
     </div>
     </p>
 
+<!--댓글-->
     <div>
         <div>
-        {% for comment in comments %}
+        {% for comment in comments %}    <!--views의 review 함수에서 해당 리뷰로 필터링된 댓글들을 comments 변수에 리턴 받음-->
         <span style="text-indent: 8pt;">
-        <h5>{{ comment.comment_content }}</h5>
-        <p>{{ comment.user}}</p>
-        <p style:font-size:25pt>{{ comment.comment_date }}</p></span><hr/>
+        <h5>{{ comment.comment_content }}</h5>    <!--댓글 내용 출력-->
+        <p>{{ comment.user}}</p>    <!--댓글 유저 출력-->
+        <p style:font-size:25pt>{{ comment.comment_date }}</p></span><hr/>   <!--댓글 작성 날짜 출력-->
         {% endfor %}
         </div>
 
-        <form method="POST" action="{% url 'appmala:create_comment' %}">
+        <form method="POST" action="{% url 'appmala:create_comment' %}">    <!--새 댓글 작성-->
             {% csrf_token %}
-            <div>
-                <label for="content">댓글</label><br>
-                <div id="maketext">
-                    <input name="reveiw_id" value="{{review.id}}" hidden>
-                    <textarea name="comment_content" width=100%>{{ form.content.value|default_if_none:'' }}</textarea>
-                    <button type="submit" style="width: 100px; text-align: center;">저장하기</button>
-                </div>
-            </div>  
+              <label for="content">댓글</label><br>
+              <div id="maketext">
+                  <input name="reveiw_id" value="{{review.id}}" hidden>   <!--댓글을 작성하려는 리뷰의 id 전송-->
+                  <textarea name="comment_content" width=100%>{{ form.content.value|default_if_none:'' }}</textarea>   <!--댓글 내용 전송-->
+                  <button type="submit" style="width: 100px; text-align: center;">저장하기</button>
+              </div>
         </form>
     </div>
  {% endblock %}
