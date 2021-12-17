@@ -21,7 +21,7 @@
       <p>{{ store.rating }}</p>
       <p>{{ store.phone_num }}</p>
         {% if store.image %}
-        <img src="{{store.image.url}}" alt="" />
+        <img src="{{store.image.url}}" alt="" style="width:700px; height:500px;" />
         {% endif %}
     <br>
 
@@ -41,7 +41,7 @@
       {% for review in reviews %}
       <div>
         {% if review.image %}
-        <img src="{{review.image.url}}" alt="" />
+        <img src="{{review.image.url}}" alt="" style="width:200px; height:200px;"/>
         {% endif %}
         <h3>{{ review.title }}</h3>
 		    <p>{{ review.rating }}</p>
