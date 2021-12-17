@@ -11,7 +11,7 @@ from django.db.models import Avg, Count
 import json
 
 # Create your views here.
-def home(request):
+def home(request):          #home페이지에 전송할 정보. store정보와 bookmark정보를 전달한다.
     print(Review.objects.values('rating').annotate(Avg('rating')).order_by())
     query = request.GET.get('query')
     
@@ -84,7 +84,7 @@ def delete(request, id):
     store.delete()
     return redirect("home")
 
-def createReview(request, store_id):
+def createReview(request, store_id):    #리뷰를 생성하고, 생성된 리뷰를 포함한 별점평균을 store에 업데이트한다.
     form = ReviewForm(request.POST, request.FILES)
     item =  get_object_or_404(Store, pk = store_id)
     
@@ -102,7 +102,7 @@ def createReview(request, store_id):
         return redirect('appmala:review', new_review.id)
     return redirect('home')
 
-def deleteReview(request, id):
+def deleteReview(request, id):          #리뷰를 삭제하고, 삭제된 리뷰를 제외한 별점평균을 store에 업데이트한다.
     review = Review.objects.get(id=id)
     rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating'))
     stores = Store.objects.get(id = review.store_id)
@@ -130,7 +130,7 @@ def create_comment(request):
         return redirect('home')
     
 @csrf_exempt
-def createBookmark(request):
+def createBookmark(request):        #북마크를 저장한다.
     data = json.loads(request.body)
     about_store = Store.objects.get(id = int(data["store_id"]))
     bookmark = Bookmark.objects.create(user = request.user, store = about_store)
@@ -138,7 +138,7 @@ def createBookmark(request):
     return HttpResponse()
     
 @csrf_exempt
-def deleteBookmark(request):
+def deleteBookmark(request):        #북마크를 삭제한다.
     data = json.loads(request.body)
     about_store = Store.objects.get(id = int(data["store_id"]))
     Bookmark.objects.filter(user = request.user, store = about_store).delete()
