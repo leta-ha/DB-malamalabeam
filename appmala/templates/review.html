@@ -28,7 +28,7 @@
         {% endif %}
       <p>{{ review.content }}</p>           
     <a href="{% url 'appmala:detail' review.store_id %}"><button>Back</button></a> <!-- 가게 상세 페이지로 이동 --> 
-    <a href="{% url 'appmala:deleteReview' review.id %}"><button>Delete</button></a> <!-- 리뷰 삭제  --> 
+    <a href="{% url 'appmala:deleteReview' review.id review.store_id %}"><button>Delete</button></a> <!-- 리뷰 삭제  --> 
     </div>
     </p>
 
