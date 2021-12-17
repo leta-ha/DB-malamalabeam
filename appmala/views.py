@@ -49,7 +49,7 @@ def detail(request, id):
 def review(request, id):
     review = get_object_or_404(Review, pk = id) 
     comments = Comment.objects.filter(review=id) # 해당 리뷰에 달린 댓글들을 필터
-    return render(request, 'review.html', {'review': review, 'comments': comments}) #리뷰와 댓글 정보를 가지고 리뷰 상세 페이지로 이동
+    return render(request, 'review.html', {'review': review, 'comments': comments}) # 리뷰와 댓글 정보를 가지고 리뷰 상세 페이지로 이동
 
 # 가게 등록 페이지 호출
 def newstore(request):
@@ -110,18 +110,18 @@ def deleteReview(request, id):
 
 def create_comment(request):
     if request.method == "POST":
-        comment = Comment()
-        comment.comment_content = request.POST.get('comment_content', '')
-        comment.review = Review.objects.get(pk=request.POST.get('reveiw_id'))
-        writer = request.user
+        comment = Comment()    # Comment 테이블 불러오기
+        comment.comment_content = request.POST.get('comment_content', '')    # comment_content 애트리뷰트 저장
+        comment.review = Review.objects.get(pk=request.POST.get('reveiw_id'))    # 댓글을 작성하려는 리뷰의 id Comment 테이블에 저장
+        writer = request.user   # 현재 로그인 돼 있는 유저 대입
         print(writer)
-        if writer:
+        if writer:    # 로그인이 돼 있어서 정상적으로 값이 대입 됐다면 해당 user Comment 테이블에 저장
             comment.user = CustomUser.objects.get(username=writer)
         else:
-            return redirect('appmala:review', comment.review_id)
-        comment.comment_date = timezone.now()
+            return redirect('appmala:review', comment.review_id)    # 로그인이 안 돼 있다면 상세 리뷰창으로 돌아감
+        comment.comment_date = timezone.now()    # 댓글 작성하고 있는 현재 시간 Comment 테이블에 저장
         comment.save()
-        return redirect('appmala:review', comment.review_id)
+        return redirect('appmala:review', comment.review_id)    # 댓글이 정상적으로 등록되었다면 상세 리뷰창으로 돌아감
     else:
         return redirect('home')
     
