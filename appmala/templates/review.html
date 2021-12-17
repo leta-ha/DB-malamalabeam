@@ -18,14 +18,14 @@
     <p style="font-family: 'GmarketSansBold'; margin-top: 40px; margin-bottom: 20px; font-size: 10pt;">
     <h3 style="text-align: left; flex:3; font-family: 'GmarketSansBold'; font-size: 30pt;">REVIEW</h3>     
     <div class="review">
-    <h1>{{ review.title }}</h1>              <!-- 리뷰 제목 --> 
-      <p>{{review.user}}</p>                 <!-- 리뷰 작성자 --> 
-      <p>{{ review.review_date }}</p>        <!-- 리뷰 작성 날짜 --> 
-      <p>{{ review.rating }}</p>             <!-- 리뷰 별점 --> 
-        {% if review.image %}                <!-- 리뷰 이미지 --> 
+    <h1>{{ review.title }}</h1>              
+      <p>{{review.user}}</p>                
+      <p>{{ review.review_date }}</p>        
+      <p>{{ review.rating }}</p>            
+        {% if review.image %}               
         <img src="{{review.image.url}}" alt="" /> 
         {% endif %}
-      <p>{{ review.content }}</p>            <!-- 리뷰 내용 -->
+      <p>{{ review.content }}</p>           
     <a href="{% url 'appmala:detail' review.store_id %}"><button>Back</button></a> <!-- 가게 상세 페이지로 이동 --> 
     <a href="{% url 'appmala:deleteReview' review.id %}"><button>Delete</button></a> <!-- 리뷰 삭제  --> 
     </div>
