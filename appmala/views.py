@@ -1,7 +1,6 @@
 from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-#from .models import Appmala
 from .models import Store, Bookmark, Review, Comment, CustomUser
 from .forms import AppmalaForm, ReviewForm
 from django.core.paginator import Paginator
@@ -10,7 +9,7 @@ from django.http import HttpResponse
 from django.db.models import Avg, Count
 import json
 
-# Create your views here.
+# 메인 페이지
 def home(request):          #home페이지에 전송할 정보. store정보와 bookmark정보를 전달한다.
     print(Review.objects.values('rating').annotate(Avg('rating')).order_by())
     query = request.GET.get('query')
@@ -77,6 +76,7 @@ def delete(request, id):
     store.delete()
     return redirect("home") #삭제한 후 메인 페이지(home)으로 이동
 
+# 리뷰 등록 함수
 def createReview(request, store_id):    #리뷰를 생성하고, 생성된 리뷰를 포함한 별점평균을 store에 업데이트한다.
     form = ReviewForm(request.POST, request.FILES)
     item =  get_object_or_404(Store, pk = store_id)
@@ -95,6 +95,7 @@ def createReview(request, store_id):    #리뷰를 생성하고, 생성된 리�
         return redirect('appmala:review', new_review.id) #리뷰가 정상적으로 등록되었다면 해당 리뷰 정보 페이지로 이동
     return redirect('home') #메인 페이지(home)으로 이동
 
+# 리뷰 삭제 함수
 def deleteReview(request, id):          #리뷰를 삭제하고, 삭제된 리뷰를 제외한 별점평균을 store에 업데이트한다.
     review = Review.objects.get(id=id)
     rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating')) # 리뷰의 평점
@@ -104,7 +105,7 @@ def deleteReview(request, id):          #리뷰를 삭제하고, 삭제된 리�
     review.delete() # 리뷰 삭제
     return redirect("appmala:detail", review.store_id) #삭제한 후 메인 페이지(home)으로 이동
 
-
+# 댓글 등록 함수
 def create_comment(request):
     if request.method == "POST":
         comment = Comment()    # Comment 테이블 불러오기
@@ -121,7 +122,8 @@ def create_comment(request):
         return redirect('appmala:review', comment.review_id)    # 댓글이 정상적으로 등록되었다면 상세 리뷰창으로 돌아감
     else:
         return redirect('home')
-    
+
+# 즐겨찾기 등록 함수
 @csrf_exempt               
 def createBookmark(request):        #북마크를 저장한다.
     data = json.loads(request.body)
@@ -129,7 +131,8 @@ def createBookmark(request):        #북마크를 저장한다.
     bookmark = Bookmark.objects.create(user = request.user, store = about_store)
     bookmark.save()
     return HttpResponse()           #http 응답 코드 반환
-    
+
+# 즐겨찾기 삭제 함수  
 @csrf_exempt
 def deleteBookmark(request):        #북마크를 삭제한다.
     data = json.loads(request.body)
