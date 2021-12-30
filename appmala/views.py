@@ -96,13 +96,17 @@ def createReview(request, store_id):    #리뷰를 생성하고, 생성된 리�
     return redirect('home') #메인 페이지(home)으로 이동
 
 # 리뷰 삭제 함수
-def deleteReview(request, id):          #리뷰를 삭제하고, 삭제된 리뷰를 제외한 별점평균을 store에 업데이트한다.
+def deleteReview(request, id, store_id):          #리뷰를 삭제하고, 삭제된 리뷰를 제외한 별점평균을 store에 업데이트한다.
     review = Review.objects.get(id=id)
-    rating = Review.objects.filter(store_id= review.store_id).aggregate(Avg('rating')) # 리뷰의 평점
-    stores = Store.objects.get(id = review.store_id) 
-    stores.rating = rating["rating__avg"] # 가게 평균 별점 정보 갱신
-    stores.save() 
     review.delete() # 리뷰 삭제
+    if(Review.objects.filter(store_id=store_id)):
+        rating = Review.objects.filter(store_id=store_id).aggregate(Avg('rating')) # 리뷰의 평점
+        stores = Store.objects.get(id = review.store_id) 
+        stores.rating = rating["rating__avg"] # 가게 평균 별점 정보 갱신
+    else:
+        stores = Store.objects.get(id = review.store_id) 
+        stores.rating = 0
+    stores.save() 
     return redirect("appmala:detail", review.store_id) #삭제한 후 메인 페이지(home)으로 이동
 
 # 댓글 등록 함수
